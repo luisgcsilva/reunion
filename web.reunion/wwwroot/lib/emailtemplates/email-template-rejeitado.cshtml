@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: Arial, sans-serif;font-size: 20px;line-height: 1.6;color: #333;">
+    <h1 style="color: #007bff">Alterações no seu Pedido de Marcação!</h1>
+    <p style="color: #555">Lamentamos mas o seu pedido foi <strong><span style="color: red;">{Estado}</span></strong>.</p>
+    <p style="color: #555">Aqui estão os detalhes completos da sua Marcação.</p>
+    <ul>
+        <li><strong>Local: </strong>{Local}</li>
+        <li><strong>Dia: </strong>{Dia}</li>
+        <li><strong>Hora de Inicio: </strong>{HoraInicio}</li>
+        <li><strong>Hora de Fim: </strong>{HoraFim}</li>
+        <li><strong>Número de Pessoas: </strong>{NumPessoas}</li>
+        <li><strong>Categoria: </strong>{Categoria}</li>
+        <li><strong>Observações: </strong>{Observacoes}</li>
+        <li><strong>Motivo da Rejeição: </strong>{Motivo}</li>
+    </ul>
+    <h2>Materiais para a Marcação</h2>
+    <ul>
+        {MarcacaoMateriais}
+    </ul>
+</body>
+</html>

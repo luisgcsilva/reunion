@@ -1,0 +1,147 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = web.reunion
+build_property.RootNamespace = web.reunion
+build_property.ProjectDir = B:\Projetos\reunion\web.reunion\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = B:\Projetos\reunion\web.reunion
+build_property._RazorSourceGeneratorDebug = 
+
+[B:/Projetos/reunion/web.reunion/wwwroot/lib/emailtemplates/email-template-aprovado.cshtml]
+build_metadata.AdditionalFiles.TargetPath = d3d3cm9vdFxsaWJcZW1haWx0ZW1wbGF0ZXNcZW1haWwtdGVtcGxhdGUtYXByb3ZhZG8uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/wwwroot/lib/emailtemplates/email-template-criar-admin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = d3d3cm9vdFxsaWJcZW1haWx0ZW1wbGF0ZXNcZW1haWwtdGVtcGxhdGUtY3JpYXItYWRtaW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/wwwroot/lib/emailtemplates/email-template-criar-client.cshtml]
+build_metadata.AdditionalFiles.TargetPath = d3d3cm9vdFxsaWJcZW1haWx0ZW1wbGF0ZXNcZW1haWwtdGVtcGxhdGUtY3JpYXItY2xpZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/wwwroot/lib/emailtemplates/email-template-editar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = d3d3cm9vdFxsaWJcZW1haWx0ZW1wbGF0ZXNcZW1haWwtdGVtcGxhdGUtZWRpdGFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/wwwroot/lib/emailtemplates/email-template-rejeitado.cshtml]
+build_metadata.AdditionalFiles.TargetPath = d3d3cm9vdFxsaWJcZW1haWx0ZW1wbGF0ZXNcZW1haWwtdGVtcGxhdGUtcmVqZWl0YWRvLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Account/AcessoNegado.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxBY2Vzc29OZWdhZG8uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/AdminGroups/_CreateAdminGroupForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5Hcm91cHNcX0NyZWF0ZUFkbWluR3JvdXBGb3JtLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/AdminGroups/_EditAdminGroupForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5Hcm91cHNcX0VkaXRBZG1pbkdyb3VwRm9ybS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Categorias/_CreateCategoriaForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmlhc1xfQ3JlYXRlQ2F0ZWdvcmlhRm9ybS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Categorias/_EditCategoriaForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmlhc1xfRWRpdENhdGVnb3JpYUZvcm0uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Home/Admin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBZG1pbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Home/AdminDashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBZG1pbkRhc2hib2FyZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Home/AdminSecretariadoCA.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBZG1pblNlY3JldGFyaWFkb0NBLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Home/Client.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDbGllbnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Home/SuperAdmin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTdXBlckFkbWluLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Locais/_CreateLocalForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9jYWlzXF9DcmVhdGVMb2NhbEZvcm0uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Locais/_EditLocalForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9jYWlzXF9FZGl0TG9jYWxGb3JtLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Marcacoes/_CreateMarcacaoForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFyY2Fjb2VzXF9DcmVhdGVNYXJjYWNhb0Zvcm0uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Marcacoes/_DetailsMarcacaoForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFyY2Fjb2VzXF9EZXRhaWxzTWFyY2FjYW9Gb3JtLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Marcacoes/_EditMarcacaoForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFyY2Fjb2VzXF9FZGl0TWFyY2FjYW9Gb3JtLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Materiais/_CreateMaterialForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWF0ZXJpYWlzXF9DcmVhdGVNYXRlcmlhbEZvcm0uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Materiais/_EditMaterialForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWF0ZXJpYWlzXF9FZGl0TWF0ZXJpYWxGb3JtLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Salas/_CreateSalaForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2FsYXNcX0NyZWF0ZVNhbGFGb3JtLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Salas/_EditSalaForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2FsYXNcX0VkaXRTYWxhRm9ybS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[B:/Projetos/reunion/web.reunion/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-jhc31j6kpf

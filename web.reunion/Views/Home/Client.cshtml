@@ -1,0 +1,334 @@
+﻿@using System.Security.Claims
+@model web.reunion.Models.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Cliente";
+    
+    var user = "";
+    var local = "";
+    if (User.Identity!.IsAuthenticated)
+    {
+        user = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+        local = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Locality)?.Value;
+    }
+}
+
+<div class="text-center mt-3 mb-3 text-white">
+    <h2>Olá, @User.FindFirst("FullName")?.Value.</h2>
+</div>
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title text-center">Marcações</h2>
+            <div class="row d-flex justify-content-between align-itemns-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span   >
+                        <a class="btn btn-success" id="createMarcacaoButton" data-bs-toggle="modal" data-bs-target="#createMarcacaoModal">
+                            <i class="fa-regular fa-calendar-plus"></i>
+                            Efetuar Pedido de Marcação
+                        </a> <br />
+                        Pode também selecionar as horas que prentende na grelha.
+                    </span>
+                    <div class="d-flex">
+                        <div class="d-flex align-items-center">
+                            <div class="form-check form-switch me-3">
+                                <input class="form-check-input" type="checkbox" role="switch" id="minhasMarcacoes">
+                                <label class="form-check-label" style="white-space: nowrap;" for="minhasMarcacoes"><strong>Minhas Marcações</strong></label>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-group-text" for="salaFilter"><strong>Filtrar por Sala:</strong></label>
+                                <select class="form-select" id="salaFilter">
+                                    <option value="">Todas</option>
+                                    <!-- Add options for each Sala dynamically from your data -->
+                                    @foreach (var sala in Model.Salas)
+                                    {
+                                        <option value="@sala.SalaId">@sala.Descricao</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="" id="calendar"></div>
+        </div>
+    </div>
+</div>
+
+<div id="loader">
+    <div class="spinner-container">
+        <div class="spinner">
+        </div>
+        <h5>Aguarde um pouco...</h5>
+    </div>
+</div>
+
+<!-- Create Marcação Modal-->
+<div class="modal fade" id="createMarcacaoModal" tabindex="-1" aria-labelledby="createMarcacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createMarcacaoModalLabel">Criar Pedido de Marcação</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Preenche o modal dinamicante com o Formulário _CreateMarcacaoForm -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mostrar Detalhes da Marcação Modal -->
+<div class="modal fade" id="detalhesMarcacaoModal" tabindex="-1" aria-labelledby="detalhesMarcacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detalhesMarcacaoModalLabel">Detalhes da sua Marcação</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Preenche o modal dinamicante com o Formulário _DetailsMarcacaoForm -->
+            </div>
+            <div class="modal-footer">
+                <a href="#" type="button" class="btn btn-danger" id="fecharMarcacao" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-xmark"></i>
+                    Fechar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Editar Detalhes da Marcação Modal -->
+<div class="modal fade" id="editClientMarcacaoModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editClientMarcacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editClientMarcacaoModalLabel">Editar Detalhes da Marcação</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Preenche o modal dinamicante com o Formulário _EditMarcaçãoForm -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var createMarcacaoModalEl = document.getElementById('createMarcacaoModal');
+            var createEventForm = document.getElementById('createEventForm');
+            var salaFilter = document.getElementById('salaFilter');
+            var minhasMarcacoesCheckbox = document.getElementById('minhasMarcacoes');
+            var localInput = '@local';
+
+            // Initialize FullCalendar with the fetched events
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                slotMinTime: '07:00:00',
+                slotMaxTime: '24:00:00',
+                allDaySlot: false,
+                nowIndicator: true,
+                firstDay: 1,
+                height: 'auto',
+                timeZone: 'local',
+                slotEventOverlap: false,
+                locale: 'pt',
+                navLinks: true,
+                headerToolbar: {
+                    start: 'timeGridDay,timeGridWeek,dayGridMonth',
+                    center: 'title',
+                    end: 'today prev,next'
+                },
+                buttonText: {
+                    today: 'Hoje',
+                    timeGridDay: 'Diária',
+                    timeGridWeek: 'Semanal',
+                    dayGridMonth: 'Mensal'
+                },
+                moreLinkText: function (num) {
+                    return "+" + num + " marcações";
+                },
+                select: function (info) {
+                    var start = info.start.toLocaleString().substring(12, 17); // Start time of the selected slot
+                    var end = info.end.toLocaleString().substring(12, 17); // End time of the selected slot
+                    var day = info.start.toLocaleString().substring(0, 10);
+                    // Extract only the time part from the start and end times
+                    $('#loader').show();
+                    $.ajax({
+                        url: '/Marcacoes/LoadCreateForm',
+                        type: 'GET',
+                        data: {
+                            day: day,
+                            start: start,
+                            end: end
+                        },
+                        success: function (data) {
+                            $('#loader').hide();
+                            $('#createMarcacaoModal .modal-body').html(data);
+                            $('#createMarcacaoModal').modal('show');
+                        },
+                        error: function () {
+                            $('#loader').hide();
+                            alert('Houve um erro ao carregar os dados. Por favor tente novamente.');
+                        }
+                    });
+                },
+                selectable: true,
+                events: function (fetchInfo, successCallback, failureCallback) {
+                    $.ajax({
+                        url: '/Marcacoes/GetBookings',
+                        type: 'GET',
+                        data: {
+                            utilizador: minhasMarcacoesCheckbox.checked ? '@user' : '',
+                            salaId: salaFilter.value,
+                            local: localInput
+                        },
+                        success: function (events) {
+                            successCallback(events);
+                        },
+                        error: function () {
+                            failureCallback();
+                        }
+                    });
+                },
+                validRange: {
+                    start: new Date()  // This sets the start date to today, blocking past dates
+                },
+                selectAllow: function (selectInfo) {
+                    var today = new Date();
+                    return selectInfo.start >= today; // Allow selection only for today or future dates
+                },
+                eventContent: function (arg) {
+                    let event = arg.event;
+                    let sala = event.extendedProps.sala;
+                    let color = event.extendedProps.color;
+                    let local = event.extendedProps.local;
+                    let estado = event.extendedProps.estado;
+
+                    let eventContent = document.createElement('div');
+                    eventContent.classList.add('fc-event-content');
+                    eventContent.style.marginLeft = '6px';
+                    eventContent.style.fontWeight = 'bold';
+
+                    if (estado != 'Pendente') {
+                        eventContent.style.color = 'white';
+                    }
+
+                    let salaElement = document.createElement('span');
+                    salaElement.classList.add('fc-event-sala');
+
+                    if (estado != 'Pendente') {
+                        salaElement.innerHTML = sala;
+                    } else {
+                        salaElement.innerHTML = local;
+                    }
+
+                    eventContent.appendChild(salaElement);
+
+                    return { domNodes: [eventContent] };
+                },
+                eventDidMount: function (info) {
+                    let backgroundColor = info.event.extendedProps.color;
+
+                    info.el.style.backgroundColor = backgroundColor;
+                },
+                eventClick: function (info) {
+                    const event = info.event;
+                    const marcacaoUser = event.title;
+                    const currentUser = '@user';
+                    const estado = event.extendedProps.estado;
+
+                    if (marcacaoUser === currentUser) {
+                        $('#loader').show();
+
+                        if (estado == "Aprovado") {
+                            $.ajax({
+                                url: `/Marcacoes/${event.extendedProps.marcacaoId}/Details`,
+                                type: 'GET',
+                                success: function (response) {
+                                    $('#loader').hide();
+                                    $('#detalhesMarcacaoModal .modal-body').html(response);
+
+                                    $('#detalhesMarcacaoModal').modal('show');
+                                },
+                                error: function (error) {
+                                    $('#loader').hide();
+                                }
+                            });
+                        } 
+                        else {
+                            $.ajax({
+                                url: `/Marcacoes/${event.extendedProps.marcacaoId}/Edit`,
+                                type: 'GET',
+                                success: function (response) {
+                                    $('#loader').hide();
+                                    $('#editClientMarcacaoModal .modal-body').html(response);
+                                    $('#editClientMarcacaoModal').modal('show');
+                                },
+                                error: function (error) {
+                                    $('#loader').hide();
+                                }
+                            });
+                        }
+                    }
+                    else {
+                        $('#loader').hide();
+                    }
+                }
+            });
+
+            calendar.render();
+
+            document.getElementById('salaFilter').addEventListener('change', function () {
+                calendar.refetchEvents();
+            });
+
+            document.getElementById('minhasMarcacoes').addEventListener('change', function () {
+                calendar.refetchEvents();
+            });
+
+            document.getElementById('createMarcacaoButton').addEventListener('click', function () {
+                    var now = new Date();
+                    var options = { timeZone: 'Europe/Lisbon', hour12: false };
+
+                    var currentTimeInLisbon = now.toLocaleTimeString('pt', options);
+
+                    var day = now.toLocaleString().substring(0, 10);
+                    var start = currentTimeInLisbon.substring(0, 5);
+                    var end = new Date(now.getTime() + 60 * 60 * 1000).toLocaleTimeString('pt', options).substring(0, 5);
+
+                    loadCreateForm(day, start, end);
+            });
+
+            function loadCreateForm(day, start, end) {
+                $('#loader').show();
+                $.ajax({
+                    url: '/Marcacoes/LoadCreateForm',
+                    type: 'GET',
+                    data: {
+                        day: day,
+                        start: start,
+                        end: end
+                    },
+                    success: function (data) {
+                        $('#loader').hide();
+                        $('#createMarcacaoModal .modal-body').html(data);
+                    },
+                    error: function () {
+                        $('#loader').hide();
+                        alert('Failed to load the form. Please try again.');
+                    }
+                });
+            }
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

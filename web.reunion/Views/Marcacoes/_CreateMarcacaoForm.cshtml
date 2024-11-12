@@ -1,0 +1,294 @@
+﻿@using Newtonsoft.Json
+@using System.Security.Claims
+@model web.reunion.Models.AdminDashboardViewModel
+
+@{
+    var user = "";
+    var local = "";
+    if (User.Identity!.IsAuthenticated)
+    {
+        local = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Locality)?.Value;
+        user = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+    }
+}
+
+<form id="createEventForm" asp-action="Create" asp-controller="Marcacoes" method="post">
+    <div class="row">
+        <div class="col-md-5 flex-grow-1">
+            <div class="mb-3">
+                <h3>Detalhes da Marcação</h3>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="@Model.Marcacao.MarcacaoId" />
+                @if (user == "AdminCA")
+                {
+                    <div class="mb-3 input-group">
+                        <label asp-for="Marcacao.LocalId" class="input-group-text"></label>
+                        <select id="createLocalMarcacao" name="Marcacao.LocalId" asp-for="Marcacao.LocalId" class="form-select" asp-items="@ViewBag.LocalId"></select>
+                        <span asp-validation-for="@Model.Marcacao.LocalId" class="text-danger"></span>
+                    </div>
+                }
+                else
+                {
+                    <input type="hidden" asp-for="Marcacao.LocalId" />
+                }
+                @if (user != "Client" && user != "AdminSecCA")
+                {
+                    <div class="mb-3 input-group">
+                        <label asp-for="Marcacao.SalaId" class="input-group-text"></label>
+                        <select id="createSalaMarcacao" name="Marcacao.SalaId" asp-for="Marcacao.SalaId" class="form-select" asp-items="@ViewBag.SalaId"></select>
+                        <span asp-validation-for="@Model.Marcacao.SalaId" class="text-danger"></span>
+                    </div>
+                }
+                <div class="mb-3 input-group">
+                    <label asp-for="Marcacao.NumPessoas" class="input-group-text"></label>
+                    <input asp-for="@Model.Marcacao.NumPessoas" min="1" type="number" value="" class="form-control" id="createNumPessoas" placeholder="Nº de Participantes" required />
+                    <span asp-validation-for="@Model.Marcacao.NumPessoas" class="text-danger"></span>
+                </div>
+                <div class="mb-3 input-group">
+                    <label asp-for="Marcacao.CategoriaId" class="input-group-text"></label>
+                    <select id="editCategoriaMarcacao" name="Marcacao.CategoriaId" asp-for="Marcacao.CategoriaId" class="form-select" asp-items="@ViewBag.CategoriaId"></select>
+                    <span asp-validation-for="@Model.Marcacao.CategoriaId" class="text-danger"></span>
+                </div>
+                <div class="mb-3 input-group">
+                    <label asp-for="@Model.Marcacao.Dia" class="input-group-text"></label>
+                    <input asp-for="@Model.Marcacao.Dia" type="date" class="form-control" id="createDia" value="@Model.Marcacao.Dia.ToString("yyyy-MM-dd")">
+                    <span asp-validation-for="@Model.Marcacao.Dia" class="text-danger"></span>
+                </div>
+                <div class="mb-3 input-group">
+                    <label asp-for="@Model.Marcacao.HoraInicio" class="input-group-text"></label>
+                    <input asp-for="@Model.Marcacao.HoraInicio" type="time" class="form-control" id="createHoraInicio" value="@Model.Marcacao.HoraInicio.ToString("HH:mm")">
+                    <span asp-validation-for="@Model.Marcacao.HoraInicio" class="text-danger"></span>
+                </div>
+                <div class="mb-3 input-group">
+                    <label asp-for="@Model.Marcacao.HoraFim" class="input-group-text"></label>
+                    <input asp-for="@Model.Marcacao.HoraFim" type="time" class="form-control" id="createHoraFim" value="@Model.Marcacao.HoraFim.ToString("HH:mm")">
+                    <span asp-validation-for="@Model.Marcacao.HoraFim" class="text-danger"></span>
+                </div>
+                <span id="horaFimError" class="text-danger" style="display: none;">A Hora de fim tem de ser posterior à Hora de Inicio.</span>
+                <div class="mb-3">
+                    <label asp-for="@Model.Marcacao.Observacoes" class="form-label"></label>
+                    <textarea asp-for="@Model.Marcacao.Observacoes" rows="4" type="text" class="form-control"></textarea>
+                </div>
+            </div>
+            @if (Model.SalaMateriais.Any() && user != "Client")
+            {
+                <div class="mb-3">
+                    <h4>Materiais Na Sala</h4>
+                    <div>
+                        <ul class="list-group list-group-flush" id="materialList">
+                            @foreach (var salaMaterial in Model.SalaMateriais)
+                            {
+                                var material = Model.Materiais.FirstOrDefault(m => m.MaterialId == salaMaterial.MaterialId);
+                                if (material != null)
+                                {
+                                    <div class="list-group-item d-flex justify-content-between align-items-start">
+                                        <div class="ms-2 me-auto">
+                                            <div>@material.Descricao</div>
+                                        </div>
+                                        <span class="badge infoMaterial">@salaMaterial.Quantidade</span>
+                                    </div>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (user != "AdminSecCA")
+        {
+            <div class="col-md-7 left-col">
+                <div class="mb-3">
+                    <!-- Materials Section -->
+                    <div class="mb-3">
+                        <h3>Materiais a Requisitar</h3>
+                        <div class="row">
+                            <!-- Material List -->
+                            <div>
+                                <ul class="list-group" id="materialsCheckboxes">
+                                    <!-- Loop through Materials -->
+                                    @foreach (var material in Model.Materiais)
+                                    {
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <!-- Checkbox and Description -->
+                                            <div class="form-check col-7">
+                                                <input class="form-check-input" type="checkbox" name="MaterialIds" value="@material.MaterialId">
+                                                <label class="form-check-label" asp-for="@material.Descricao">
+                                                    @material.Descricao
+                                                </label>
+                                            </div>
+                                            <!-- Quantity Input -->
+                                            <div class="input-group">
+                                                <input type="number" min="1" class="form-control" id="createMarcacaoQuantity_@material.MaterialId" disabled="disabled" name="MaterialQuantities[@material.MaterialId]">
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="modal-footer">
+        @if(user == "Client") {
+            <button type="submit" class="btn btn-success">
+                <i class="fa-regular fa-floppy-disk"></i>
+                Efetuar Pedido de Marcação
+            </button>
+        }
+        else
+        {
+            <button type="submit" class="btn btn-success">
+                <i class="fa-regular fa-floppy-disk"></i>
+                Efetuar Marcação
+            </button>
+        }
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+            <i class="fa-solid fa-xmark"></i>
+            Cancelar
+        </button>
+    </div>
+</form>
+
+<div id="loader">
+    <div class="spinner-container">
+        <div class="spinner">
+        </div>
+        <h5>Aguarde um pouco...</h5>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Add change event listeners to the time inputs
+        document.getElementById('createHoraInicio').addEventListener('change', validateTime);
+        document.getElementById('createHoraFim').addEventListener('change', validateTime);
+
+        function validateTime() {
+            var horaInicio = document.getElementById('createHoraInicio').value;
+            var horaFim = document.getElementById('createHoraFim').value;
+            var errorSpan = document.getElementById('horaFimError');
+
+            if (horaInicio && horaFim && horaInicio >= horaFim) {
+                errorSpan.style.display = 'block';
+                document.getElementById('createHoraFim').focus();
+                return false;
+            } else {
+                errorSpan.style.display = 'none';
+                return true;
+            }
+        }
+
+        if ('@user' === "AdminCA") {
+            function updateSalasDropdown() {
+                var localId = document.getElementById('createLocalMarcacao');
+
+                $.ajax({
+                    url: '/Salas/GetSalasByLocal',
+                    type: 'GET',
+                    data: {
+                        localId: localId.value,
+                        isActive: true
+                    },
+                    success: function (data) {
+                        var salaSelect = $('#createSalaMarcacao');
+                        salaSelect.empty();
+                        $.each(data, function (index, item) {
+                            salaSelect.append('<option value="' + item.salaId + '">' + item.descricao + '</option>');
+                        });
+                    }
+                });
+            }
+
+            updateSalasDropdown();
+
+            $('#createLocalMarcacao').change(function () {
+                updateSalasDropdown();
+            });
+        }
+
+        document.getElementById('createEventForm').addEventListener('submit', async function (event) {
+            event.preventDefault();  // Prevent the form from submitting immediately
+
+            const form = this;
+            const loader = document.getElementById('loader');
+            loader.style.display = 'block';
+
+            const isTimeValid = validateTime();
+            if (!isTimeValid) {
+                loader.style.display = 'none';
+                return;  // Exit if time validation fails
+            }
+
+            if (!form.checkValidity()) {
+                loader.style.display = 'none';
+            } else {
+                this.submit();
+            }
+        });
+
+        $('#createSalaMarcacao').change(function () {
+            var salaId = $(this).val();
+            updateMaterialList(salaId);
+        });
+
+        function updateMaterialList(salaId) {
+            var materiaisList = @Html.Raw(JsonConvert.SerializeObject(Model.Materiais));
+            $.ajax({
+                url: '/Marcacoes/GetMateriaisFromSala',
+                type: 'GET',
+                data: { id: salaId },
+                success: function (response) {
+                    var materialList = $('#materialList');
+                    materialList.empty();
+                    response.forEach(function (materialData) {
+                        var material = materiaisList.find(m => m.MaterialId == materialData.materialId);
+                        if (material) {
+                            materialList.append(
+                                '<li class="list-group-item d-flex justify-content-between align-items-start">' +
+                                '<div class="ms-2 me-auto">' +
+                                '<div>' + material.Descricao + '</div>' +
+                                '</div>' +
+                                '<span class="badge infoMaterial">' + materialData.quantidade + '</span>' +
+                                '</li>'
+                            );
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                }
+            });
+        }
+
+        // Get all the checkboxes
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+        // Iterate over each checkbox
+        checkboxes.forEach(function (checkbox) {
+            // Add change event listener to each checkbox
+            checkbox.addEventListener('change', function () {
+                // Get the corresponding quantity input
+                var quantityInput = document.querySelector(`#createMarcacaoQuantity_${this.value}`);
+
+                if (quantityInput) {
+                    // If the checkbox is checked, enable the quantity input, else disable it
+                    // If the checkbox is checked, require the quantity input
+                    if (this.checked) {
+                        quantityInput.disabled = false;
+                        quantityInput.required = true;
+                        quantityInput.setAttribute('placeholder', "Quantidade");
+                    } else {
+                        quantityInput.disabled = true;
+                        quantityInput.required = false;
+                        quantityInput.removeAttribute('placeholder');
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+@{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}

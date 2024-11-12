@@ -1,0 +1,24 @@
+﻿@model web.reunion.Models.Material
+
+<form id="createMaterialForm" asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="Descricao" class="form-label fw-semibold fs-5"></label>
+        <input class="form-control" asp-for="Descricao" placeholder="Insira a Descrição/Nome do Material.">
+        <span asp-validation-for="Descricao" class="text-danger"></span>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-success">
+            <i class="fa-regular fa-floppy-disk"></i>
+            Adicionar Material
+        </button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+            <i class="fa-solid fa-xmark"></i>
+            Cancelar
+        </button>
+    </div>
+</form>
+
+@{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}

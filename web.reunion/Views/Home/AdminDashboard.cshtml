@@ -1,0 +1,688 @@
+﻿@using System.Security.Claims
+@model web.reunion.Models.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Painel de Administrador";
+
+    var local = "";
+    if (User.Identity!.IsAuthenticated)
+    {
+        local = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Locality)?.Value;
+    }
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Marcação Column -->
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title text-center">Marcações</h2>
+                    <div class="row d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a class="btn btn-success" id="createMarcacaoButton" data-bs-toggle="modal" data-bs-target="#createMarcacaoModal">
+                                <i class="fa-regular fa-calendar-plus"></i>
+                                Efetuar Marcação
+                            </a>
+                            <div class="d-flex">
+                                <div>
+                                    <div class="mb-1">
+                                        <div class="input-group">
+                                            <label class="input-group-text" for="salaFilter"><strong>Filtrar por Sala:</strong></label>
+                                            <select class="form-select" id="salaFilter">
+                                                <option value="">Todas</option>
+                                                <!-- Add options for each Sala dynamically from your data -->
+                                                @foreach (var sala in Model.Salas)
+                                                {
+                                                    <option value="@sala.SalaId">@sala.Descricao</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-1">
+                                        <div class="input-group">
+                                            <label class="input-group-text" for="estadoFilter"><strong>Filtrar por Estado:</strong></label>
+                                            <select class="form-select" id="estadoFilter">
+                                                <option value="">Todos</option>
+                                                <!-- Add options for each Sala dynamically from your data -->
+                                                @foreach (var estado in Enum.GetValues(typeof(Estado)).Cast<Estado>())
+                                                {
+                                                    <option value="@estado">@estado</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="calendar"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tooltip"></div>
+
+        <!-- Salas Material Column -->
+        <div class="col-md-2">
+            <div class="container">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="salas-tab" data-bs-toggle="tab" data-bs-target="#salas" type="button" role="tab" aria-controls="salas" aria-selected="true">Salas</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="materiais-tab" data-bs-toggle="tab" data-bs-target="#materiais" type="button" role="tab" aria-controls="materiais" aria-selected="false">Materiais</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="salas" role="tabpanel" aria-labelledby="salas-tab">
+                        <div class="card box-shadow mt-3">
+                            <div class="card-header">
+                                <h3 class="card-title mb-3 text-center">Salas</h3>
+                                <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createSalaModal">
+                                    <i class="fa-solid fa-plus"></i>
+                                    Adicionar Sala
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    @foreach (var sala in Model.Salas)
+                                    {
+                                        <a href="#" style="background-color: @sala.Cor; color: white" class="btn list-group-item list-group-item-primary edit-sala-button mb-3" data-id="@sala.SalaId" data-bs-toggle="modal" data-bs-target="#editSalaModal">
+                                            @if (sala.IsActive == false)
+                                            {
+                                                <div class="row">
+
+                                                    <div class="col-md-10">
+                                                        <strong>Descrição:</strong> @sala.Descricao<br>
+                                                        <strong>Localização:</strong> @sala.Localizacao <br />
+                                                        <strong>Lotação:</strong> @sala.Capacidade
+                                                    </div>
+                                                    <div class="col-md-2 align-content-center">
+                                                        <i class="fa-regular fa-circle-xmark"></i>
+                                                    </div>
+                                                </div>
+
+                                            }
+                                            else
+                                            {
+                                                <strong>Descrição:</strong> @sala.Descricao <br>
+                                                <strong>Localização:</strong> @sala.Localizacao <br />
+                                                <strong>Lotação:</strong> @sala.Capacidade
+                                            }
+                                        </a>
+                                    }
+                                </ul>
+                                <div>
+                                    <span><i class="fa-regular fa-circle-xmark"></i> - Sala Inativa</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="materiais" role="tabpanel" aria-labelledby="materiais-tab">
+                        <div class="card box-shadow mt-3">
+                            <div class="card-header">
+                                <h3 class="card-title mb-3 text-center">Materiais</h3>
+                                <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createMaterialModal">
+                                    <i class="fa-solid fa-plus"></i>
+                                    Adicionar Material
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <div class="list-group">
+                                    @foreach (var material in Model.Materiais)
+                                    {
+                                        <a data-id="@material.MaterialId" data-bs-toggle="modal" data-bs-target="#editMaterialModal" class="btn list-group-item list-group-item-primary edit-material-button mb-3">
+                                            <strong>Descrição:</strong> @material.Descricao<br>
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tooltip"></div>
+    </div>
+</div>
+
+<div id="loader">
+    <div class="spinner-container">
+        <div class="spinner">
+        </div>
+        <h5>Aguarde um pouco...</h5>
+    </div>
+</div>
+
+<!-- Criar Marcação Modal-->
+<div class="modal fade" id="createMarcacaoModal" tabindex="-1" aria-labelledby="createMarcacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createMarcacaoModalLabel">Marcar Sala</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Preenche o modal dinamicante com o Formulário _CreateMarcacaoForm -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Editar Marcação Modal -->
+<div class="modal fade" id="editModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Editar Marcação</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Preenche o modal dinamicante com o Formulário _EditMarcaçãoForm -->
+                <div id="editFormContainer"></div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" type="button" class="btn btn-success" id="aprovarMarcacao">
+                    <i class="fa-solid fa-check"></i>
+                    Aprovar
+                </a>
+                <a href="#" type="button" class="btn btn-danger" id="recusarMarcacao">
+                    <i class="fa-solid fa-ban"></i>
+                    Recusar
+                </a>
+                <a href="#" type="button" class="btn btn-warning" id="fecharMarcacao" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-xmark"></i>
+                    Fechar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Motivo da Recuso Modal -->
+<div class="modal fade" id="motivoModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="motivoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="motivoModalLabel">Deseja registar o motivo da Recusa?</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <textarea id="motivoInput" rows="4" type="text" class="form-control" placeholder="Motivo"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="confirmMotivo">
+                    <i class="fa-regular fa-floppy-disk"></i>
+                    Confirmar
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmNotMotivo" data-bs-dismiss="modal">
+                    <i class="fa-regular fa-rectangle-xmark"></i>
+                    Não
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Criar Sala Modal -->
+<div class="modal fade" id="createSalaModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="createSalaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createSalaModalLabel">Adicionar Nova Sala</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Preenche o modal dinamicante com o Formulário _CreateSalaForm -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Editar Sala Modal -->
+<div class="modal fade" id="editSalaModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editSalaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editSalaModalLabel">Editar Detalhes de Sala</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Preenche o modal dinamicante com o Formulário _EditSalaForm -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Criar Material Modal -->
+<div class="modal fade" id="createMaterialModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="createMaterialModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createMaterialModalLabel">Adicionar Material</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Preenche o modal dinamicante com o Formulário _CreateMaterialForm -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Editar Material Modal -->
+<div class="modal fade" id="editMaterialModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editMaterialModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editMaterialModalLabel">Editar Detalhes de Material</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Preenche o modal dinamicante com o Formulário _EditMaterialForm -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var createMarcacaoModalEl = document.getElementById('createMarcacaoModal');
+            var salaFilter = document.getElementById('salaFilter');
+            var estadoFilter = document.getElementById('estadoFilter');
+            var localFilter = $('#localFilter');
+            var userLocal = '@local';
+
+            function getLocalValue() {
+                if (localFilter.length) {
+                    return localFilter.value;
+                } else {
+                    return userLocal;
+                }
+            }
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                slotMinTime: '07:00:00',
+                slotMaxTime: '24:00:00',
+                allDaySlot: false,
+                nowIndicator: true,
+                firstDay: 1,
+                height: 'auto',
+                timeZone: 'local',
+                slotEventOverlap: false,
+                locale: 'pt',
+                navLinks: true,
+                headerToolbar: {
+                    start: 'timeGridDay,timeGridWeek,dayGridMonth,multiMonthSixMonth,multiMonthYear',
+                    center: 'title',
+                    end: 'today prev,next'
+                },
+                buttonText: {
+                    today: 'Hoje',
+                    timeGridDay: 'Diária',
+                    timeGridWeek: 'Semanal',
+                    dayGridMonth: 'Mensal',
+                    multiMonthSixMonth: 'Semestral',
+                    multiMonthYear: 'Anual'
+                },
+                views: {
+                    multiMonthSixMonth: {
+                        type: 'multiMonth',
+                        duration: { months: 6 }
+                    }
+                },
+                moreLinkText: function (num) {
+                    return "+" + num + " marcações";
+                },
+                select: function (info) {
+                    var start = info.start.toLocaleString().substring(12, 17);
+                    var end = info.end.toLocaleString().substring(12, 17);
+                    var day = info.start.toLocaleString().substring(0, 10);
+                    var local = getLocalValue();
+
+                    $('#loader').show();
+
+                    $.ajax({
+                        url: '/Marcacoes/LoadCreateForm',
+                        type: 'GET',
+                        data: {
+                            day: day,
+                            start: start,
+                            end: end
+                        },
+                        success: function (data) {
+                            $('#loader').hide();
+                            $('#createMarcacaoModal .modal-body').html(data);
+                            $('#createMarcacaoModal').modal('show');
+                        },
+                        error: function () {
+                            $('#loader').hide();
+                            alert('Houve um erro ao carregar os dados. Por favor tente novamente.');
+                        }
+                    });
+                },
+                selectAllow: function (selectInfo) {
+                    var today = new Date();
+                    return selectInfo.start >= today;
+                },
+                selectable: true,
+                events: function (fetchInfo, successCallback, failureCallback) {
+                    $.ajax({
+                        url: '/Marcacoes/GetBookings',
+                        type: 'GET',
+                        data: {
+                            salaId: salaFilter.value,
+                            estado: estadoFilter.value,
+                            local: getLocalValue()
+                        },
+                        success: function (events) {
+                            successCallback(events);
+                        },
+                        error: function () {
+                            failureCallback();
+                        }
+                    });
+                },
+                eventContent: function (arg) {
+                    let event = arg.event;
+                    let category = event.extendedProps.categoria;
+                    let sala = event.extendedProps.sala;
+                    let estado = event.extendedProps.estado;
+                    let color = event.extendedProps.color;
+                    let local = event.extendedProps.local;
+                    let duration = moment(arg.event.end).diff(moment(arg.event.start), 'minutes');
+
+                    let eventContent = document.createElement('div');
+                    eventContent.classList.add('fc-event-content');
+                    eventContent.style.fontWeight = 'bold';
+                    eventContent.style.marginLeft = '3px';
+                    eventContent.style.maxWidth = '100%';
+                    eventContent.style.maxHeight = '90%';
+                    eventContent.style.display = 'flex';
+
+                    let salaElement = document.createElement('span');
+                    salaElement.classList.add('fc-event-sala');
+                    salaElement.style.backgroundColor = color;
+                    salaElement.style.maxHeight = '90%';
+                    salaElement.style.maxWidth = '100%';
+                    salaElement.style.flex = '1';
+
+                    if (estado == 'Pendente') {
+                        salaElement.innerHTML = local;
+
+                    } else {
+                        salaElement.innerHTML = sala;
+                    }
+
+                    eventContent.appendChild(salaElement);
+
+                    return { domNodes: [eventContent] };
+                },
+                eventDidMount: function (info) {
+                    let estado = info.event.extendedProps.estado;
+                    let backgroundColor;
+                    let textColor;
+
+                    switch (estado) {
+                        case 'Aprovado':
+                            backgroundColor = 'rgba(125, 218, 88, 0.70)';
+                            break;
+                        case 'Pendente':
+                            backgroundColor = 'rgba(255, 222, 89, 0.70)';
+                            break;
+                        case 'Recusado':
+                            backgroundColor = 'rgba(228, 8, 10, 0.70)';
+                            break;
+                        default:
+                            backgroundColor = 'grey';
+                    }
+
+                    info.el.style.backgroundColor = backgroundColor;
+                },
+                eventClick: function (info) {
+                    const event = info.event;
+                    const marcacaoId = event.extendedProps.marcacaoId;
+
+                    $('#loader').show();
+
+                    $.ajax({
+                        url: `/Marcacoes/${marcacaoId}/Edit`,
+                        type: 'GET',
+                        success: function (response) {
+                            $('#loader').hide();
+                            $('#editModal .modal-body').html(response);
+
+                            if (event.extendedProps.estado == 'Aprovado') {
+                                $('#recusarMarcacao').show();
+                                $('#aprovarMarcacao').hide();
+                            }
+                            if (event.extendedProps.estado == 'Recusado') {
+                                $('#aprovarMarcacao').show();
+                                $('#recusarMarcacao').hide();
+                            }
+                            if (event.extendedProps.estado == 'Pendente') {
+                                $('#aprovarMarcacao').show();
+                                $('#recusarMarcacao').show();
+                            }
+
+                            $('#editModal').modal('show');
+                        },
+                        error: function (error) {
+                            $('#loader').hide();
+                        }
+                    });
+                },
+                eventMouseEnter: function (info) {
+                    let tooltip = document.getElementById('tooltip');
+                    let categoria = info.event.extendedProps.categoria;
+                    let sala = info.event.extendedProps.sala;
+                    let local = info.event.extendedProps.local;
+                    let estado = info.event.extendedProps.estado;
+
+                    tooltip.innerHTML = `<strong>Utilizador:</strong> ${info.event.title}<br>
+                                                             <strong>Categoria:</strong> ${categoria}<br>
+                                                             <strong>Sala:</strong> ${sala}<br>
+                                                             <strong>Estado:</strong> ${estado}`;
+
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = (info.jsEvent.pageX + 10) + 'px';
+                    tooltip.style.top = (info.jsEvent.pageY + 10) + 'px';
+                },
+                eventMouseLeave: function (info) {
+                    let tooltip = document.getElementById('tooltip');
+                    tooltip.style.display = 'none';
+                }
+            });
+            calendar.render();
+
+            var label = document.createElement('div');
+            label.innerHTML = 'Vista do Calendário';
+            label.style.textAlign = 'center';
+            label.style.fontWeight = 'bold';
+
+            var toolbar = document.querySelector('.fc-toolbar-chunk:first-child');
+            toolbar.insertBefore(label, toolbar.firstChild);
+
+            document.getElementById('salaFilter').addEventListener('change', function () {
+                calendar.refetchEvents();
+            });
+
+            document.getElementById('estadoFilter').addEventListener('change', function () {
+                calendar.refetchEvents();
+            });
+
+            if (localFilter.length) {
+                document.getElementById('localFilter').addEventListener('change', function () {
+                    calendar.refetchEvents();
+                });
+            }
+
+            document.getElementById('createMarcacaoButton').addEventListener('click', function () {
+                var now = new Date();
+                var options = { timeZone: 'Europe/Lisbon', hour12: false };
+
+                var currentTimeInLisbon = now.toLocaleTimeString('pt', options);
+
+                var day = now.toLocaleString().substring(0, 10);
+                var start = currentTimeInLisbon.substring(0, 5);
+                var end = new Date(now.getTime() + 60 * 60 * 1000).toLocaleTimeString('pt', options).substring(0, 5);
+
+                loadCreateForm(day, start, end);
+            });
+
+            function loadCreateForm(day, start, end) {
+                $('#loader').show();
+                $.ajax({
+                    url: '/Marcacoes/LoadCreateForm',
+                    type: 'GET',
+                    data: {
+                        day: day,
+                        start: start,
+                        end: end
+                    },
+                    success: function (data) {
+                        $('#loader').hide();
+                        $('#createMarcacaoModal .modal-body').html(data);
+                    },
+                    error: function () {
+                        $('#loader').hide();
+                        alert('Failed to load the form. Please try again.');
+                    }
+                });
+            }
+
+            $('#recusarMarcacao').on('click', function () {
+                $('#editModal').modal('hide');
+                $('#motivoModal').modal('show');
+            });
+
+            $('#confirmMotivo').on('click', function () {
+                var motivo = $('#motivoInput').val().toString();
+                saveChanges('Recusado', motivo);
+            });
+
+            $('#confirmNotMotivo').on('click', function () {
+                saveChanges('Recusado', '');
+            });
+
+            $('#aprovarMarcacao').on('click', function () {
+                saveChanges('Aprovado');
+            });
+
+            function saveChanges(estado, motivo = null) {
+                $('#estadoField').val(estado);
+                $('#motivoField').val(motivo);
+
+                var form = $('#editModal form')[0];
+                var formData = new FormData(form);
+
+                if (form.length) {
+                    var salaId = formData.get('Marcacao.SalaId');
+                    var dia = formData.get('Marcacao.Dia');
+                    var horaInicio = formData.get('Marcacao.HoraInicio');
+                    var horaFim = formData.get('Marcacao.HoraFim');
+                    var localId = formData.get('Marcacao.LocalId');
+
+                    $('#loader').show();
+
+                    formData.set('Estado', estado);
+                    formData.set('Motivo', motivo);
+
+                    $.ajax({
+                        url: form.action,
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            $('#loader').hide();
+                            $('#motivoModal').modal('hide');
+                            $('#editModal').modal('hide');
+                            location.reload();
+                        },
+                        error: function () {
+                            $('#loader').hide();
+                        }
+                    });
+                }
+            }
+
+            $(document).ready(function () {
+                $('#createMaterialModal').on('show.bs.modal', function (event) {
+                    var button = $(event.relatedTarget);
+                    var modal = $(this);
+
+                    $.ajax({
+                        url: '/Materiais/Create',
+                        type: 'GET',
+                        success: function (data) {
+                            modal.find('.modal-body').html(data);
+                        }
+                    });
+                });
+            });
+
+            $(document).ready(function () {
+                $('#createSalaModal').on('show.bs.modal', function (event) {
+                    var button = $(event.relatedTarget);
+                    var modal = $(this);
+
+                    $.ajax({
+                        url: '/Salas/Create',
+                        type: 'GET',
+                        success: function (data) {
+                            modal.find('.modal-body').html(data);
+                        }
+                    });
+                });
+            });
+
+            function openEditSalaModal(salaId) {
+                $.ajax({
+                    url: `/Salas/${salaId}/Edit`,
+                    type: 'GET',
+                    success: function (response) {
+                        $('#editSalaModal .modal-body').html(response);
+                        $('#editSalaModal').modal('show');
+                    },
+                    error: function (error) {
+                        console.error('Erro fetching sala info:', error);
+                    }
+                });
+            }
+
+            $('.edit-sala-button').click(function () {
+                var salaId = $(this).data('id');
+                openEditSalaModal(salaId);
+            });
+
+            function openEditMaterialModal(materialId) {
+                $.ajax({
+                    url: `/Materiais/${materialId}/Edit`,
+                    type: 'GET',
+                    success: function (response) {
+                        $('#editMaterialModal .modal-body').html(response);
+                        $('#editMaterialModal').modal('show');
+                    },
+                    error: function (error) {
+                        console.error('Error fetching material info:', error);
+                    }
+                });
+            }
+
+            $('.edit-material-button').click(function () {
+                var materialId = $(this).data('id');
+                openEditMaterialModal(materialId);
+            });
+
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

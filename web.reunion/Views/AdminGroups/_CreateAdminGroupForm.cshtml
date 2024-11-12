@@ -1,0 +1,29 @@
+﻿@model web.reunion.Models.AdminGroup
+
+<form id="createAdminGroupForm" asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="Grupo" class="form-label fw-semibold fs-5"></label>
+        <input class="form-control" asp-for="Grupo" placeholder="Insira o Nome do Grupo." />
+        <span asp-validation-for="Grupo" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="SecurityGroup" class="form-label fw-semibold fs-5"></label>
+        <input class="form-control" asp-for="SecurityGroup" placeholder="Insira o Nome do Grupo na AD." />
+        <span asp-validation-for="SecurityGroup" class="text-danger"></span>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-success">
+            <i class="fa-regular fa-floppy-disk"></i>
+            Adicionar Categoria
+        </button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+            <i class="fa-solid fa-xmark"></i>
+            Cancelar
+        </button>
+    </div>
+</form>
+
+@{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}

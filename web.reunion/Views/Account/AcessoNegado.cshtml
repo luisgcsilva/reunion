@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Acesso Negado";
+}
+
+<div class="accessDeniedContainer container">
+    <a class="btn btn-secondary" asp-action="RedirecionarUser" asp-controller="Home">Voltar Atrás</a>
+    <div>
+        <img class="acessoNegado" src="~/AcessoNegado.png" alt="Acesso Negado">
+    </div>
+    <div class="message">
+        <p>Acesso Negado!</p>
+        <p>Você não tem permissão para visualizar esta página.</p>
+    </div>
+    <div> 
+        <p class="text-white">Para mais informações, por favor contacte um Administrador de Sistema.</p>
+    </div>
+</div>

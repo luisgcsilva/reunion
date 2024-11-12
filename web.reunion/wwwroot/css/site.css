@@ -1,0 +1,423 @@
+html {
+    position: relative;
+    font-size: 14px;
+}
+
+@media (min-width: 1200px) {
+    html {
+        font-size: 16px;
+    }
+
+    .responsive-link {
+        font-size: 0.6rem;
+        padding: 0.25rem;
+    }
+}
+
+.accessDeniedContainer {
+    margin-top: 40px;
+
+}
+
+.acessoNegado {
+    max-width: 30%;
+}
+
+.ulslaLogo {
+    max-width: 20%;
+}
+
+.message {
+    font-weight: bolder;
+    margin-top: 20px;
+    font-size: 1.5em;
+    color: #dc3545;
+}
+
+.loginForm {
+    max-width: 330px;
+    padding: 1rem;
+    background-color: #22313f;
+    border-radius: 10px;
+}
+
+.left-col {
+    border-left: 2px dashed #34495e;
+}
+
+.card-header {
+    background-color: #34495e !important;
+    color: white !important;
+}
+
+.box-shadow {
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .50);
+}
+
+.loginForm .form-floating:focus-within{
+    z-index: 2;
+}
+
+.form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.modal-backdrop.in {
+    display: none;
+}
+
+body {
+    background: rgb(30,86,160);
+    background: linear-gradient(90deg, rgba(30,86,160,1) 25%, rgba(92,194,242,1) 95%, rgba(141,198,255,1) 100%);
+}
+
+.full-button {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.vertical-divider {
+    display: inline-block;
+    width: 1px;
+    height: 20px; /* Adjust the height as needed */
+    background-color: #ccc; /* Adjust the color as needed */
+    margin: 0 10px; /* Adjust the spacing as needed */
+    vertical-align: middle;
+}
+
+.edit-material-button {
+    background-color: #8dc6ff !important;
+}
+
+    .edit-material-button:hover {
+        background-color: #1e56a0 !important;
+        color: white !important;
+    }
+
+.edit-categoria-button {
+    background-color: #8dc6ff !important;
+}
+
+    .edit-categoria-button:hover {
+        background-color: #1e56a0 !important;
+        color: white !important;
+    }
+
+.edit-local-button {
+    background-color: #8dc6ff !important;
+}
+
+    .edit-local-button:hover {
+        background-color: #1e56a0 !important;
+        color: white !important;
+    }
+
+.edit-adminGroup-button {
+    background-color: #8dc6ff !important;
+}
+
+    .edit-adminGroup-button:hover {
+        background-color: #1e56a0 !important;
+        color: white !important;
+    }
+
+.responsive-link {
+    font-size: 1rem;
+    padding: 1rem;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 5px solid rgba(255, 255, 255);
+    border-top-color: #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#loader {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 9999;
+    text-align: center;
+}
+
+    #loader .spinner-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+/*
+    Esta seccção é dedicada para mostrar a linha e o ponto que indica as horas atuais e o dia atual.
+*/
+.fc-timeGridWeek-view .fc-timegrid-now-indicator-container {
+    overflow: visible !important;
+}
+
+.fc-timeGridWeek-view .fc-timegrid-now-indicator-line {
+    width: calc(700% + 6px) !important;
+}
+
+.fc-timeGridWeek-view .fc-day:nth-child(2) .fc-timegrid-now-indicator-line {
+    --fc-now-indicator-shift: 0%;
+}
+
+.fc-timeGridWeek-view .fc-day:nth-child(3) .fc-timegrid-now-indicator-line {
+    --fc-now-indicator-shift: 14.29%;
+}
+
+.fc-timeGridWeek-view .fc-day:nth-child(4) .fc-timegrid-now-indicator-line {
+    --fc-now-indicator-shift: 28.57%;
+}
+
+.fc-timeGridWeek-view .fc-day:nth-child(5) .fc-timegrid-now-indicator-line {
+    --fc-now-indicator-shift: 42.86%;
+}
+
+.fc-timeGridWeek-view .fc-day:nth-child(6) .fc-timegrid-now-indicator-line {
+    --fc-now-indicator-shift: 57.14%;
+}
+
+.fc-timeGridWeek-view .fc-day:nth-child(7) .fc-timegrid-now-indicator-line {
+    --fc-now-indicator-shift: 71.43%;
+}
+
+.fc-timeGridWeek-view .fc-day:nth-child(8) .fc-timegrid-now-indicator-line {
+    --fc-now-indicator-shift: 85.71%;
+}
+
+.fc-timeGridWeek-view .fc-day .fc-timegrid-now-indicator-line {
+    transform: translateX(calc(-1 * var(--fc-now-indicator-shift)));
+}
+
+.fc-timeGridWeek-view .fc-timegrid-now-indicator-line::before {
+    position: absolute;
+    display: block;
+    content: '';
+    margin-top: -7px;
+    width: 13px;
+    height: 13px;
+    border-radius: 13px;
+    border: 1px solid var(--reactist-bg-default);
+    background-color: var(--fc-now-indicator-color);
+    left: calc(var(--fc-now-indicator-shift) - 3px);
+}
+
+.fc .fc-timegrid-now-indicator-line {
+    border-top-width: 2px; /* Adjust thickness */
+    border-color: black; /* Adjust color */
+    position: relative; /* Required for positioning dot */
+}
+
+.fc .fc-timegrid-now-indicator-arrow {
+    display: none;
+}
+
+/*
+    Termina aqui a secção da linha e ponto.
+*/
+
+/* Muda a cor das linhas horizontais da grelha*/
+.fc .fc-timegrid-slots .fc-timegrid-slot {
+    color: white;
+    font-weight: bold;
+}
+
+/* Muda a cor da coluna do tempo*/
+.fc .fc-timegrid-slots colgroup {
+    background-color: #34495e;
+}
+
+/* Muda a cor de fundo da coluna do dia de hoje */
+.fc .fc-day-today {
+    background-color: lightskyblue !important;
+}
+
+/* Muda a cor da bola do indicador de agora */
+.fc .fc-now-indicator {
+    background-color: red;
+}
+
+/* Muda a cor do titulo da coluna do tempo*/
+.fc .fc-col-header-cell {
+    background-color: #34495e !important;
+}
+
+/* Muda a cor do texto no cabeçalho dos dias */
+.fc .fc-col-header-cell-cushion {
+    color: white;
+}
+
+.fc .fc-timegrid-axis-cushion {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.fc .fc-view-harness {
+    background-color: #e4f1fe;
+    border-radius: 10px;
+}
+
+.fc .fc-button {
+    background-color: #1e56a0;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 5px 10px;
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+    .fc .fc-button:hover {
+        background-color: #163172;
+        color: #ffffff;
+    }
+
+.fc .fc-button-active {
+    background-color: #34495e !important;
+}
+
+.fc .fc-toolbar-title {
+    font-weight: bold;
+}
+
+.fc .fc-event {
+    margin: 2px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    background-color: rgba(255, 222, 89, 0.70);
+    color: black !important;
+}
+
+#calendar th {
+    border: 1px solid #8dc6ff;
+    border-bottom: none;
+}
+
+#calendar td {
+    border: 1px solid #22313f;
+}
+
+.fc-toolbar-chunk:first-child {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+    .fc-toolbar-chunk:first-child > div {
+        margin-bottom: 5px;
+    }
+
+.fc-event-content {
+    display: flex;
+    max-width: 100%;
+    max-height: 90%;
+    padding: 3px;
+    color: black;
+    align-items: center;
+    border-radius: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fc .fc-highlight {
+    background-color: rgba(141, 198, 255, 0.5) !important;
+}
+
+.fc .fc-daygrid-more-link {
+    background-color: #007bff;
+    color: black;
+}
+
+.fc-event-sala {
+    flex: 1;
+    border-radius: 10px;
+    max-width: 80%;
+    max-height: 80%;
+    padding-left: 5px;
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+#tooltip {
+    display: none;
+    max-width: fit-content;
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    z-index: 100000;
+}
+
+.nav-link {
+    background-color: #d6e4f0 !important;
+    color: black !important;
+    margin-left: 2px;
+}
+
+    .nav-link.active {
+        color: white !important;
+        background-color: #34495e !important;
+    }
+
+.modal-header{
+    background-color: #34495e !important;
+    color: white !important;
+}
+
+.btn-close-white {
+    opacity: 1 !important;
+}
+
+.position-relative {
+    position: relative;
+}
+
+.form-floating > i {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+    z-index: 100000;
+}
+
+.form-floating > label::after {
+    background-color: transparent !important;
+}
+
+.infoMaterial {
+    background-color: #1e56a0 !important;
+    color: white !important;
+}

@@ -1,0 +1,128 @@
+﻿@using Newtonsoft.Json
+@using System.Security.Claims
+@model web.reunion.Models.AdminDashboardViewModel
+
+@{
+    var userRole = "";
+    if (User.Identity!.IsAuthenticated)
+    {
+        userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+    }
+}
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="mt-2">
+            <div class="mb-3 input-group">
+                <label asp-for="Marcacao.Estado" class="input-group-text"></label>
+                <input asp-for="Marcacao.Estado" class="form-control" value="@Model.Marcacao.Estado" disabled readonly />
+            </div>
+            <div class="mb-3 input-group">
+                <label asp-for="Marcacao.LocalId" class="input-group-text"></label>
+                <input class="form-control" value="@Model.Locais.Where(l => l.LocalId == Model.Marcacao.LocalId).First().Descricao" disabled readonly />
+            </div>
+            <div class="mb-3 input-group">
+                <label asp-for="Marcacao.Utilizador" class="input-group-text"></label>
+                <input class="form-control" value="@Model.Marcacao.Utilizador" disabled readonly />
+            </div>
+            @if (Model.Marcacao.Estado == "Aprovado")
+            {
+                <div class="mb-3 input-group">
+                    <label asp-for="Marcacao.SalaId" class="input-group-text"></label>
+                    <input asp-for="Salas.First().Descricao" class="form-control" value="@Model.Salas.Find(s => s.SalaId == Model.Marcacao.SalaId)?.Descricao?.ToString()" disabled readonly />
+                    <span asp-validation-for="@Model.Marcacao.SalaId" class="text-danger"></span>
+                </div>
+            }
+            <div class="mb-3 input-group">
+                <label asp-for="Marcacao.NumPessoas" class="input-group-text"></label>
+                <input id="detailsNumPessoas" name="Marcacao.NumPessoas" asp-for="Marcacao.NumPessoas" type="number" class="form-control" value="@Model.Marcacao.NumPessoas" disabled readonly />
+                <span asp-validation-for="Marcacao.NumPessoas" class="text-danger"></span>
+            </div>
+            <div class="mb-3 input-group">
+                <label asp-for="Marcacao.Dia" class="input-group-text"></label>
+                <input id="editDiaMarcacao" name="Marcacao.Dia" asp-for="Marcacao.Dia" type="date" class="form-control" value="@Model.Marcacao.Dia.ToString("yyyy-MM-dd")" disabled readonly>
+                <span asp-validation-for="Marcacao.Dia" class="text-danger"></span>
+            </div>
+            <div class="mb-3 input-group">
+                <label asp-for="Marcacao.HoraInicio" class="input-group-text"></label>
+                <input id="editHoraInicio" name="Marcacao.HoraInicio" asp-for="Marcacao.HoraInicio" type="time" class="form-control" value="@Model.Marcacao.HoraInicio.ToString("HH:mm")" disabled readonly>
+                <span asp-validation-for="Marcacao.HoraInicio" class="text-danger"></span>
+            </div>
+            <div class="mb-3 input-group">
+                <label asp-for="Marcacao.HoraFim" class="input-group-text"></label>
+                <input id="editHoraFim" name="Marcacao.HoraFim" asp-for="Marcacao.HoraFim" type="time" class="form-control" value="@Model.Marcacao.HoraFim.ToString("HH:mm")" disabled readonly>
+                <span asp-validation-for="Marcacao.HoraFim" class="text-danger"></span>
+            </div>
+            <div class="mb-3 input-group">
+                <label asp-for="Marcacao.CategoriaId" class="input-group-text"></label>
+                <input id="editCategoria" name="Marcacao.CategoriaId" class="form-control" asp-for="Categorias.First().Descricao" type="text" value="@Model.Categorias[Model.Marcacao.CategoriaId].Descricao" disabled readonly />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Marcacao.Observacoes" class="form-label"></label>
+                <textarea disabled readonly asp-for="@Model.Marcacao.Observacoes" rows="4" type="text" class="form-control" value="@Model.Marcacao.Observacoes"></textarea>
+                <span asp-validation-for="Marcacao.Observacoes" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div>
+            <div class="mb-3">
+                <h3>Materiais Para a Marcação</h3>
+                <div>
+                    <ul class="list-group" id="materialList">
+                        @foreach (var salaMaterial in Model.SalaMateriais)
+                        {
+                            var material = Model.Materiais.FirstOrDefault(m => m.MaterialId == salaMaterial.MaterialId);
+                            if (material != null)
+                            {
+
+                                <li class="list-group-item">
+                                    <div class="input-group">
+                                        <div class="col-md-8">
+                                            <label class="input-group-text">@material.Descricao</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="number" class="form-control" value="@salaMaterial.Quantidade" disabled readonly />
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        }
+                        @foreach (var material in Model.Materiais)
+                        {
+                            var marcacaoMaterial = Model.MarcacaoMateriais.FirstOrDefault(mm => mm.MaterialId == material.MaterialId);
+                            if (marcacaoMaterial != null)
+                            {
+                                var isSelected = marcacaoMaterial != null;
+                                var quantity = isSelected ? marcacaoMaterial?.Quantidade : 0;
+                                <li class="list-group-item">
+                                    <!-- Material Name -->
+                                    <div class="input-group">
+                                        <div class="col-md-8">
+                                            <label class="input-group-text">@material.Descricao</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="number" min="1" class="form-control" id="editMarcacaoQuantity_@material.MaterialId" name="MaterialQuantities[@material.MaterialId]" value="@(isSelected ? quantity.ToString() : null)" @(isSelected ? "required" : "disabled") disabled readonly />
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="loader">
+    <div class="spinner-container">
+        <div class="spinner">
+        </div>
+        <h5>Aguarde um pouco...</h5>
+    </div>
+</div>
+
+@{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}

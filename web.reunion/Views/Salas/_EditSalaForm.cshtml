@@ -1,0 +1,137 @@
+﻿@using System.Security.Claims
+@model web.reunion.Models.EditSalaViewModel
+
+@{
+    var userRole = "";
+
+    if (User.Identity!.IsAuthenticated)
+    {
+        userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+    }
+}
+
+<form asp-action="Edit" asp-controller="Salas" method="post">
+    <input type="hidden" asp-for="Sala!.SalaId" />
+    <!-- Sala details -->
+    <div class="row">
+        <div class="col-md-5">
+            <h3>Informações da Sala</h3>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if(userRole == "SuperAdmin")
+            {
+                <div class="mb-3">
+                    <label asp-for="Sala.LocalId" class="form-label fw-semibold fs-5"></label>
+                    <select id="editLocalSala" name="Sala.LocalId" asp-for="Sala.LocalId" class="form-select" asp-items="@ViewBag.LocalId"></select>
+                    <span asp-validation-for="@Model.Sala.LocalId" class="text-danger"></span>
+                </div>
+            } 
+            else
+            {
+                <input type="hidden" asp-for="@Model.Sala.LocalId" />
+            }
+            <div class="mb-3">
+                <label asp-for="Sala!.Descricao" class="form-label fw-semibold fs-5"></label>
+                <input asp-for="Sala!.Descricao" class="form-control" />
+                <span asp-validation-for="Sala!.Descricao" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Sala!.Capacidade" class="form-label fw-semibold fs-5"></label>
+                <input asp-for="Sala!.Capacidade" class="form-control" min="1" placeholder="Insira a lotação máxima da sala" />
+                <span asp-validation-for="Sala!.Capacidade" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Sala!.Localizacao" class="form-label fw-semibold fs-5"></label>
+                <input asp-for="Sala!.Localizacao" class="form-control" placeholder="Insira a localização da sala" />
+                <span asp-validation-for="Sala!.Localizacao" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Sala!.Cor" class="form-label fw-semibold fs-5"></label>
+                <input asp-for="Sala!.Cor" type="color" class="form-control" />
+                <span asp-validation-for="Sala!.Cor" class="text-danger"></span>
+                <div class="form-text">Escolha uma cor para a sala, de forma a ser mais fácil a sua identificação na grelha de marcações. Tente evitar a cor verde, vermelha, amarela.</div>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Sala!.IsActive" class="form-label fw-semibold fs-5"></label>
+                <select asp-for="Sala!.IsActive" class="form-select">
+                    <option value="True">Ativa</option>
+                    <option value="False">Inativa</option>
+                </select>
+                <span asp-validation-for="Sala!.IsActive" class="text-danger"></span>
+            </div>
+        </div>
+        <!-- Sala Materiais -->
+        <div class="col-md-7">
+            <div class="mb-3">
+                <div class="mb-3">
+                    <h3>Materiais Presentes na Sala</h3>
+                    <div class="row">
+                        <div>
+                            <ul class="list-group">
+                                @foreach (var material in Model.Materiais!)
+                                {
+                                    var salaMaterial = Model.SalaMateriais!.FirstOrDefault(sm => sm.MaterialId == material.MaterialId);
+                                    var isSelected = salaMaterial != null;
+                                    var quantity = isSelected ? salaMaterial?.Quantidade : 0;
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <!-- Material Name -->
+                                        <div class="form-check col-7">
+                                            <input class="form-check-input" type="checkbox" id="material_@material.MaterialId" name="MaterialIds" value="@material.MaterialId" @(isSelected ? "checked" : "")>
+                                            <label class="form-check-label" for="material_@material.MaterialId">
+                                                @material.Descricao
+                                            </label>
+                                        </div>
+                                        <!-- Quantity Input -->
+                                        <div class="input-group">
+                                            <input type="number" min="1" class="form-control" id="editSalaQuantity_@material.MaterialId" name="MaterialQuantities[@material.MaterialId]" value="@(isSelected ? quantity.ToString() : null)" @(isSelected ? "required" : "disabled")>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-success">
+            <i class="fa-regular fa-floppy-disk"></i>
+            Guardar Alterações
+        </button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+            <i class="fa-solid fa-xmark"></i>
+            Cancelar
+        </button>
+    </div>
+</form>
+
+    <script>
+        // Get all the checkboxes
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+        // Iterate over each checkbox
+        checkboxes.forEach(function (checkbox) {
+            // Add change event listener to each checkbox
+            checkbox.addEventListener('change', function () {
+                // Get the corresponding quantity input
+                var quantityInput = document.querySelector(`#editSalaQuantity_${this.value}`);
+
+                if (quantityInput) {
+                    // If the checkbox is checked, enable the quantity input, else disable it
+                    // If the checkbox is checked, require the quantity input
+                    if (this.checked) {
+                        quantityInput.disabled = false;
+                        quantityInput.required = true;
+                        quantityInput.setAttribute('placeholder', "Quantidade");
+                    } else {
+                        quantityInput.disabled = true;
+                        quantityInput.required = false;
+                        quantityInput.removeAttribute('placeholder');
+                    }
+                }
+            });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
